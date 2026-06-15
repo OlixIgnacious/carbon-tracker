@@ -1,59 +1,82 @@
-# Carbon Tracker
+# 🌍 CarbonTracker
 
-A smart, dynamic assistant that helps users understand, track, and reduce their personal carbon footprint through activity logging, AI-driven insights, interactive visualizations, and gamified challenges.
+**CarbonTracker** is an interactive, gamified, and AI-powered web application designed to help individuals understand, track, and reduce their daily carbon footprint. 
 
-## Features
+Built for the **Prompt Wars Challenge (Vertical 3: The Carbon Tracker)**, it strictly adheres to a completely serverless, database-free architecture under a 10MB repository limit while offering advanced features like real-time tracking, intelligent insights, and engaging gamification.
 
-- **Activity Logging**: Log transport, energy, and food consumption. Real-time CO₂e emission previews.
-- **Data Visualization**: Interactive line and doughnut charts to visualize emission trends and categorical breakdown.
-- **Gamification**: Streaks, achievements, and badges to encourage consistent tracking and sustainable choices.
-- **AI-Powered Insights Engine**: Uses Google Gemini to analyze your data and provide specific, actionable reduction recommendations. Fallback to curated recommendations if API is unavailable.
-- **Local Storage**: All personal data is stored securely in your browser's `localStorage` — no databases, no tracking.
+---
 
-## Technology Stack
+## ✨ Core Features
 
-- **Framework**: Next.js 15 (App Router)
+- **Activity Logging & Ingestion**: Track transit (car, flight, public transport, bicycle), home utilities (electricity, water, heating), and food choices (beef, poultry, plant-based). Real-time calculations convert these activities into scientific kg CO₂e metrics.
+- **Personalized Insights Engine**: Integrated with **Google Gemini 2.0 Flash**. The AI reads your recent aggregated carbon data and generates personalized, actionable, and realistic reduction steps.
+- **Local vs Global Tracking**: A personalized onboarding flow allows users to select their geographical region (e.g., US, UK, EU, Asia). The tracker dynamically compares their personal footprint against their exact regional average—all done locally without requiring a central database!
+- **Data Visualization**: Stunning, interactive Chart.js visualizations including a 30-day emissions line chart and a categorical footprint doughnut chart.
+- **Gamified Actions & Streaks**: 
+  - **Badges**: Unlock 11 unique badges across different categories (e.g., "Zero-Emission Commute", "Plant-based Pioneer").
+  - **Streaks**: A robust daily streak system featuring a "Streak Freeze" mechanic to keep users motivated without punishing occasional misses.
+  - **Daily Challenges**: A rotating pool of deterministic daily challenges (e.g., "Meatless Monday") that users can accept and complete for extra engagement.
+- **Authentication Abstraction**: Features beautiful Login and Registration UI wrappers powered by a flexible `AuthContext`. Currently mocked via `localStorage` for the challenge, but perfectly architected to instantly plug into **Firebase** or **Supabase** Auth in the future.
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Charts**: Chart.js v4
-- **AI Integration**: Google Generative AI (Gemini 2.0 Flash)
+- **Styling**: Tailwind CSS v4 (Glass-morphism design system)
+- **Charts**: Chart.js / react-chartjs-2
+- **AI Integration**: `@google/generative-ai` (Gemini API via Server Route Handlers)
+- **Testing**: Vitest (Unit testing for calculation and gamification logic)
+- **Persistence**: Strict `localStorage` hydration (Zero server-side database dependencies)
 
-## Setup and Running
+---
 
-1. **Clone the repository** (or download the source).
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
-3. **Set up Environment Variables**:
-   Copy `.env.example` to `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
-   Add your Gemini API key (from [Google AI Studio](https://aistudio.google.com/)) to `.env.local`:
-   ```
-   GEMINI_API_KEY=your_actual_key_here
-   ```
-4. **Run the development server**:
-   ```bash
-   npm run dev
-   ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+## 🛠️ Getting Started
 
-## Architecture & Storage
+### 1. Prerequisites
+- Node.js (v18+)
+- A Google Gemini API Key (Optional, but required for AI insights)
 
-- **Context-driven state**: Global state managed via React Context (`src/context/CarbonContext.tsx`).
-- **Hydration safety**: State relies entirely on client-side `localStorage`, reading strictly after component mount.
-- **Server Actions/API**: Gemini API calls are securely processed server-side in `src/app/api/insights/route.ts` to protect API keys.
+### 2. Installation
+Clone the repository and install dependencies:
+```bash
+git clone https://github.com/OlixIgnacious/carbon-tracker.git
+cd carbon-tracker
+npm install
+```
 
-## Methodology
+### 3. Environment Variables
+Create a `.env.local` file in the root directory and add your Gemini API Key:
+```env
+GEMINI_API_KEY=your_api_key_here
+```
 
-Emission calculations use reliable factors from:
-- UK Government DEFRA/DESNZ Greenhouse Gas Conversion Factors 2024
-- Poore & Nemecek (2018), *Science*
+### 4. Running the App
+Start the Next.js development server:
+```bash
+npm run dev
+```
+Open `http://localhost:3000` in your browser.
 
-See the **About & Methodology** page in the app for full tables of conversion factors.
+### 5. Running Tests
+Run the Vitest test suite to validate emission factors and streak logic:
+```bash
+npm run test
+```
 
-## Challenge Vertical
+---
 
-Built as a submission for **Challenge Vertical 3: The Carbon Tracker** (Sustainability Persona).
+## 🔮 Future Roadmap & Enhancements
+
+Based on recent open-source research and academic developments in personal carbon tracking, here are several high-impact features planned for future iterations:
+
+1. **Carbon Credit Score System**: Similar to a financial credit score, users start with a baseline score that fluctuates based on their monthly emission deltas, creating a highly engaging long-term metric.
+2. **Community Leaderboards**: Once connected to Firebase/Supabase, users can form groups (workplaces, schools, friends) and compete on regional or private leaderboards.
+3. **Automated Data Integration**: Syncing with smart home APIs (e.g., Nest, Hive) or fitness APIs (Strava, Apple Health) to automatically log energy usage and zero-emission transit (cycling/walking) without manual input.
+4. **Educational Hub & Multilingual Support**: Expanding the application to include short micro-learning modules about climate change, and translating the interface using `next-intl` to reach a global audience.
+5. **Computer Vision Scanning**: Allowing users to take a photo of their utility bill or grocery receipt, using Gemini Multimodal AI to automatically extract and log the carbon footprint of their purchases.
+
+---
+
+*Designed and engineered for the Prompt Wars Challenge.*
