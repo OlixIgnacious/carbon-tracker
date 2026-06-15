@@ -6,7 +6,11 @@
 // All values in kg CO₂e (carbon dioxide equivalent)
 // ============================================================
 
-import type { TransportMode, EnergySource, FoodCategory } from './types';
+import type { TransportMode, EnergySource, FoodCategory, Region } from './types';
+
+// ============================================================
+// Regional Baselines (kg CO2e per day)
+// ============================================================
 
 // --- Transport: kg CO₂e per passenger-km ---
 export const TRANSPORT_FACTORS: Record<TransportMode, number> = {
@@ -46,7 +50,15 @@ export const FOOD_FACTORS: Record<FoodCategory, number> = {
 };
 
 // --- Reference Values ---
-export const UK_AVERAGE_DAILY_CO2E = 13.0; // kg CO₂e per person per day (approximate)
+export const REGIONAL_AVERAGES: Record<Region, number> = {
+  us: 41.0, // ~15 tonnes/year
+  uk: 13.0, // ~4.7 tonnes/year
+  eu: 16.0, // ~6 tonnes/year
+  asia: 11.0, // Highly variable, but roughly ~4 tonnes/year average
+  global: 13.0, // ~4.8 tonnes/year
+};
+
+export const UK_AVERAGE_DAILY_CO2E = 13.0; // fallback for backwards compat
 export const TREES_PER_KG_CO2E_YEAR = 1 / 22; // One mature tree absorbs ~22 kg CO₂/year
 
 // --- Calculation Functions ---

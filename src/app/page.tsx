@@ -5,7 +5,8 @@ import Link from 'next/link';
 import { useCarbon } from '@/context/CarbonContext';
 import { SummaryCard } from '@/components/dashboard/SummaryCard';
 import { NarrativeInsight } from '@/components/dashboard/NarrativeInsight';
-import { UK_AVERAGE_DAILY_CO2E } from '@/lib/emission-factors';
+import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
+import { REGIONAL_AVERAGES } from '@/lib/emission-factors';
 
 // Dynamic import for chart components (client-only, uses canvas)
 const EmissionsLineChart = dynamic(
@@ -18,10 +19,10 @@ const CategoryDoughnut = dynamic(
   { ssr: false, loading: () => <div className="glass-card p-6 h-[380px] animate-shimmer" /> }
 );
 
-function getTrend(value: number): 'good' | 'average' | 'high' {
+function getTrend(value: number, average: number): 'good' | 'average' | 'high' {
   if (value === 0) return 'good';
-  if (value < 8) return 'good';
-  if (value <= UK_AVERAGE_DAILY_CO2E) return 'average';
+  if (value < average * 0.6) return 'good';
+  if (value <= average) return 'average';
   return 'high';
 }
 
@@ -46,17 +47,28 @@ export default function DashboardPage() {
   const weeklyTotal = summaries.slice(-7).reduce((sum, d) => sum + d.total, 0);
   const monthlyTotal = summaries.reduce((sum, d) => sum + d.total, 0);
   const unlockedBadges = badges.filter((b) => b.unlockedAt !== null);
+  const regionalAverage = REGIONAL_AVERAGES[profile.region] || REGIONAL_AVERAGES.global;
 
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
+      <section className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-carbon-100 tracking-tight">
+            Dashboard
+          </h1>
+          <p className="text-carbon-400 mt-1">
+            Welcome back, {profile.name}!
+          </p>
+        </div>
+        <div className="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg text-xs text-carbon-400">
+          Region: <span className="text-carbon-200 capitalize">{profile.region === 'us' ? 'US' : profile.region === 'uk' ? 'UK' : profile.region === 'eu' ? 'EU' : profile.region}</span>
+        </div>
+      </section>
+
+      {/* Daily Challenge */}
       <section>
-        <h1 className="text-3xl font-bold text-carbon-100 tracking-tight">
-          Dashboard
-        </h1>
-        <p className="text-carbon-400 mt-1">
-          Your personal carbon footprint overview
-        </p>
+        <DailyChallengeCard />
       </section>
 
       {/* Summary Cards */}
@@ -65,8 +77,8 @@ export default function DashboardPage() {
           label="Today"
           value={todayTotal}
           icon="📅"
-          trend={getTrend(todayTotal)}
-          subtitle={todayTotal === 0 ? 'No activities logged today' : `UK avg: ${UK_AVERAGE_DAILY_CO2E} kg/day`}
+          trend={getTrend(todayTotal, regionalAverage)}
+          subtitle={todayTotal === 0 ? 'No activities logged today' : `${profile.region.toUpperCase()} avg: ${regionalAverage} kg/day`}
         />
         <SummaryCard
           label="This Week"

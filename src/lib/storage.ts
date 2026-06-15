@@ -87,6 +87,8 @@ export function saveProfile(profile: UserProfile): void {
 export function createDefaultProfile(): UserProfile {
   return {
     name: 'Eco Explorer',
+    region: 'global',
+    isFirstVisit: true,
     createdAt: new Date().toISOString(),
     currentStreak: 0,
     longestStreak: 0,

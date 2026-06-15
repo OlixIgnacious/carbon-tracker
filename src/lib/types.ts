@@ -92,8 +92,12 @@ export interface Badge {
 }
 
 // --- User Profile ---
+export type Region = 'global' | 'us' | 'uk' | 'eu' | 'asia';
+
 export interface UserProfile {
   name: string;
+  region: Region;
+  isFirstVisit: boolean;
   createdAt: string;
   currentStreak: number;
   longestStreak: number;
