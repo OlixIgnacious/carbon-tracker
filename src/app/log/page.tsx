@@ -5,6 +5,7 @@ import { useCarbon } from '@/context/CarbonContext';
 import { TransportForm } from '@/components/log/TransportForm';
 import { EnergyForm } from '@/components/log/EnergyForm';
 import { FoodForm } from '@/components/log/FoodForm';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 type Category = 'transport' | 'energy' | 'food';
 
@@ -31,104 +32,106 @@ export default function LogPage() {
     .filter(Boolean);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
-      {/* Header */}
-      <section>
-        <h1 className="text-3xl font-bold text-carbon-100 tracking-tight">
-          Log Activity
-        </h1>
-        <p className="text-carbon-400 mt-1">
-          Record your daily activities to track your carbon footprint
-        </p>
-      </section>
-
-      {/* Success Toast */}
-      {successMessage && (
-        <div
-          className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl animate-slide-up flex items-center gap-2"
-          role="alert"
-        >
-          <span aria-hidden="true">✅</span>
-          <span className="text-sm font-medium">{successMessage}</span>
-        </div>
-      )}
-
-      {/* Badge Unlock Celebration */}
-      {newBadges.length > 0 && (
-        <div
-          className="bg-amber-500/15 border border-amber-500/30 text-amber-300 px-4 py-4 rounded-xl animate-slide-up"
-          role="alert"
-        >
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-lg animate-confetti" aria-hidden="true">🎉</span>
-            <span className="font-semibold text-sm">Badge Unlocked!</span>
-          </div>
-          {newBadges.map((badge) => badge && (
-            <div key={badge.id} className="flex items-center gap-2 text-sm">
-              <span aria-hidden="true">{badge.icon}</span>
-              <span className="font-medium">{badge.name}</span>
-              <span className="text-amber-500/70">— {badge.description}</span>
-            </div>
-          ))}
-          <button
-            onClick={clearRecentBadges}
-            className="mt-2 text-xs text-amber-500/50 hover:text-amber-400 transition-colors"
-          >
-            Dismiss
-          </button>
-        </div>
-      )}
-
-      {/* Category Selector */}
-      {!selectedCategory && (
-        <section className="space-y-4">
-          <h2 className="text-lg font-semibold text-carbon-200">
-            What would you like to log?
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className="glass-card p-6 text-left hover:border-emerald-500/30 transition-all group cursor-pointer"
-                id={`log-category-${cat.id}`}
-              >
-                <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform" aria-hidden="true">
-                  {cat.icon}
-                </span>
-                <h3 className="font-semibold text-carbon-200 mb-1">{cat.label}</h3>
-                <p className="text-xs text-carbon-500">{cat.description}</p>
-              </button>
-            ))}
-          </div>
+    <ProtectedRoute>
+      <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">
+        {/* Header */}
+        <section>
+          <h1 className="text-3xl font-bold text-carbon-100 tracking-tight">
+            Log Activity
+          </h1>
+          <p className="text-carbon-400 mt-1">
+            Record your daily activities to track your carbon footprint
+          </p>
         </section>
-      )}
 
-      {/* Category-Specific Forms */}
-      {selectedCategory && (
-        <div className="animate-slide-up">
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className="flex items-center gap-2 text-sm text-carbon-400 hover:text-carbon-200 transition-colors mb-4"
+        {/* Success Toast */}
+        {successMessage && (
+          <div
+            className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 px-4 py-3 rounded-xl animate-slide-up flex items-center gap-2"
+            role="alert"
           >
-            <span aria-hidden="true">←</span> Back to categories
-          </button>
+            <span aria-hidden="true">✅</span>
+            <span className="text-sm font-medium">{successMessage}</span>
+          </div>
+        )}
 
-          {selectedCategory === 'transport' && (
-            <TransportForm onSuccess={handleSuccess} />
-          )}
-          {selectedCategory === 'energy' && (
-            <EnergyForm onSuccess={handleSuccess} />
-          )}
-          {selectedCategory === 'food' && (
-            <FoodForm onSuccess={handleSuccess} />
-          )}
-        </div>
-      )}
+        {/* Badge Unlock Celebration */}
+        {newBadges.length > 0 && (
+          <div
+            className="bg-amber-500/15 border border-amber-500/30 text-amber-300 px-4 py-4 rounded-xl animate-slide-up"
+            role="alert"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-lg animate-confetti" aria-hidden="true">🎉</span>
+              <span className="font-semibold text-sm">Badge Unlocked!</span>
+            </div>
+            {newBadges.map((badge) => badge && (
+              <div key={badge.id} className="flex items-center gap-2 text-sm">
+                <span aria-hidden="true">{badge.icon}</span>
+                <span className="font-medium">{badge.name}</span>
+                <span className="text-amber-500/70">— {badge.description}</span>
+              </div>
+            ))}
+            <button
+              onClick={clearRecentBadges}
+              className="mt-2 text-xs text-amber-500/50 hover:text-amber-400 transition-colors"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
 
-      {/* Recent Activities */}
-      <RecentActivities />
-    </div>
+        {/* Category Selector */}
+        {!selectedCategory && (
+          <section className="space-y-4">
+            <h2 className="text-lg font-semibold text-carbon-200">
+              What would you like to log?
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 stagger-children">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className="glass-card p-6 text-left hover:border-emerald-500/30 transition-all group cursor-pointer"
+                  id={`log-category-${cat.id}`}
+                >
+                  <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform" aria-hidden="true">
+                    {cat.icon}
+                  </span>
+                  <h3 className="font-semibold text-carbon-200 mb-1">{cat.label}</h3>
+                  <p className="text-xs text-carbon-500">{cat.description}</p>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Category-Specific Forms */}
+        {selectedCategory && (
+          <div className="animate-slide-up">
+            <button
+              onClick={() => setSelectedCategory(null)}
+              className="flex items-center gap-2 text-sm text-carbon-400 hover:text-carbon-200 transition-colors mb-4"
+            >
+              <span aria-hidden="true">←</span> Back to categories
+            </button>
+
+            {selectedCategory === 'transport' && (
+              <TransportForm onSuccess={handleSuccess} />
+            )}
+            {selectedCategory === 'energy' && (
+              <EnergyForm onSuccess={handleSuccess} />
+            )}
+            {selectedCategory === 'food' && (
+              <FoodForm onSuccess={handleSuccess} />
+            )}
+          </div>
+        )}
+
+        {/* Recent Activities */}
+        <RecentActivities />
+      </div>
+    </ProtectedRoute>
   );
 }
 

@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { useState } from 'react';
 
 const NAV_ITEMS = [
@@ -13,6 +14,7 @@ const NAV_ITEMS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const { user, isAuthenticated, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -53,6 +55,37 @@ export function Navbar() {
                 </Link>
               );
             })}
+          </div>
+
+          <div className="hidden md:flex items-center space-x-4">
+            {isAuthenticated ? (
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium text-carbon-300">
+                  {user?.name}
+                </span>
+                <button
+                  onClick={() => logout()}
+                  className="bg-white/5 hover:bg-white/10 text-carbon-200 text-sm font-semibold px-4 py-2 rounded-lg transition-colors border border-white/10"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
+                <Link
+                  href="/login"
+                  className="text-carbon-300 hover:text-carbon-100 text-sm font-medium transition-colors"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/register"
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -98,6 +131,39 @@ export function Navbar() {
                 </Link>
               );
             })}
+            <div className="pt-4 pb-2 border-t border-white/10 mt-2">
+              {isAuthenticated ? (
+                <div className="px-3 space-y-2">
+                  <div className="text-sm font-medium text-carbon-300 mb-2">Signed in as {user?.name}</div>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-left text-carbon-400 hover:text-carbon-200 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <div className="px-3 space-y-2 flex flex-col">
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-carbon-400 hover:text-carbon-200 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Log in
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-3 rounded-lg text-sm font-medium transition-colors text-center mt-2"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

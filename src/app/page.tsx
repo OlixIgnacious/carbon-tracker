@@ -7,6 +7,7 @@ import { SummaryCard } from '@/components/dashboard/SummaryCard';
 import { NarrativeInsight } from '@/components/dashboard/NarrativeInsight';
 import { DailyChallengeCard } from '@/components/dashboard/DailyChallengeCard';
 import { REGIONAL_AVERAGES } from '@/lib/emission-factors';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 
 // Dynamic import for chart components (client-only, uses canvas)
 const EmissionsLineChart = dynamic(
@@ -31,13 +32,15 @@ export default function DashboardPage() {
 
   if (!isHydrated) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="glass-card p-5 h-[120px] animate-shimmer" />
-          ))}
+      <ProtectedRoute>
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="glass-card p-5 h-[120px] animate-shimmer" />
+            ))}
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     );
   }
 
@@ -50,7 +53,8 @@ export default function DashboardPage() {
   const regionalAverage = REGIONAL_AVERAGES[profile.region] || REGIONAL_AVERAGES.global;
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <ProtectedRoute>
+      <div className="space-y-8 animate-fade-in">
       {/* Header */}
       <section className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
@@ -160,6 +164,7 @@ export default function DashboardPage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }
